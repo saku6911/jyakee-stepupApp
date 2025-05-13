@@ -1,23 +1,13 @@
-import { useEffect, useState } from "react";
-import { fetchJapaneseNameFromSpeciesUrl } from "../../api/getPokeApi";
+import { useJapanesePokemonName } from "../../hooks/useJapanesePokemonName";
+import { PokemonCardProps } from "../../types";
 
-type Props = {
-  name: string;
-  image: string;
-  types: string[];
-  speciesUrl: string;
-};
-
-export const PokemonCard = ({ name, image, types, speciesUrl }: Props) => {
-  const [jaName, setJaName] = useState<string>("");
-
-  useEffect(() => {
-    const loadJaName = async () => {
-      const result = await fetchJapaneseNameFromSpeciesUrl(speciesUrl);
-      setJaName(result);
-    };
-    loadJaName();
-  }, [speciesUrl]);
+export const PokemonCard = ({
+  name,
+  image,
+  types,
+  speciesUrl,
+}: PokemonCardProps) => {
+  const jaName = useJapanesePokemonName(speciesUrl);
 
   return (
     <div>
