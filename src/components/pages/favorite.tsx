@@ -89,22 +89,25 @@ export default function Favorite() {
   return (
     <>
       <Header />
-      <div className="flex flex-col gap-15 items-center justify-center h-full bg-red-900 p-20 ">
-        <h1 className="text-white font-bold text-4xl">お気に入り一覧</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 bg-white p-20 gap-20">
+      <div className="flex flex-col gap-10 items-center  min-h-screen bg-red-900 px-4 py-10 sm:px-6 md:px-10 lg:px-20">
+        <h1 className="text-white font-bold text-2xl md:text-4xl">
+          お気に入り一覧
+        </h1>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl bg-white p-6 sm:p-10 rounded shadow">
           {favorites.map((poke: PokemonSummary) => (
             <Link to={`/pokemon/${poke.name}`} key={poke.name}>
-              <div>
+              <div className="text-center hover:scale-105 transition-transform duration-200">
                 <img
                   loading="lazy"
                   src={poke.image}
                   alt={poke.name}
-                  width={200}
+                  className="mx-auto w-[120px] sm:w-[150px] md:w-[180px] lg:w-[200px]"
                 />
-                <p>
+                <p className="mt-2 font-semibold">
                   {poke.jaName} ({poke.name})
                 </p>
-                <p>
+                <p className="text-sm text-gray-600">
                   タイプ：
                   {poke.types
                     .map((type) => typeTranslations[type] || type)

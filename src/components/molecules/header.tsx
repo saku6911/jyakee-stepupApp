@@ -5,8 +5,8 @@ import { MdOutlineAccountCircle } from "react-icons/md";
 export function Header() {
   const user = useCurrentUser();
   return (
-    <header className="bg-white flex justify-between w-5/6 h-20 items-center rounded-md mx-auto">
-      <div className="flex gap-10">
+    <header className="bg-white w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 rounded-md">
+      <nav className="flex flex-wrap justify-center sm:justify-start gap-6 text-sm sm:text-base">
         <Link to="/user" className="hover:opacity-50 transition duration-200">
           ポケモン一覧
         </Link>
@@ -16,11 +16,13 @@ export function Header() {
         >
           お気に入り一覧
         </Link>
-      </div>
-      <div>
+      </nav>
+
+      <div className="text-sm sm:text-base text-gray-700">
         {user ? (
-          <span className="flex gap-2 items-center">
-            <MdOutlineAccountCircle className="text-3xl" /> {user.email}
+          <span className="flex items-center gap-2">
+            <MdOutlineAccountCircle className="text-xl sm:text-2xl" />
+            {user.email}
           </span>
         ) : (
           <span>未ログイン</span>

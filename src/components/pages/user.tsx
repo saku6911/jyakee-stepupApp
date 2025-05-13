@@ -66,37 +66,41 @@ export default function User() {
   return (
     <>
       <Header />
-      <div className="flex flex-col gap-10 items-center justify-center h-full bg-red-900 p-20">
-        <h1 className="text-white font-bold text-4xl">ポケモン一覧</h1>
+      <div className="flex flex-col gap-6 items-center justify-center min-h-screen bg-red-900 px-4 py-10 sm:px-8 md:px-20">
+        <h1 className="text-white font-bold text-2xl md:text-4xl">
+          ポケモン一覧
+        </h1>
 
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="ポケモンの名前または日本語名で検索"
-          className="px-4 py-2 rounded border w-96 bg-white"
+          className="px-4 py-2 rounded border w-full max-w-md bg-white"
         />
 
-        <div className="bg-white grid grid-cols-5 gap-10 p-10 h-full">
+        <div className="bg-white grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-6 rounded w-full">
           {filteredList.length > 0 ? (
             filteredList.map((poke: PokemonSummary) => (
               <Link to={`/pokemon/${poke.name}`} key={poke.name}>
-                <div className="text-center w-[200]">
+                <div className="text-center w-full">
                   <img
                     loading="lazy"
                     src={poke.image}
                     alt={poke.name}
-                    width={200}
+                    className="mx-auto w-[120px] h-auto sm:w-[150px] md:w-[180px] lg:w-[200px]"
                   />
-                  <p>
+                  <p className="mt-2 font-semibold">
                     {poke.jaName} ({poke.name})
                   </p>
-                  <p>タイプ: {poke.types.join(", ")}</p>
+                  <p className="text-sm text-gray-600">
+                    タイプ: {poke.types.join(", ")}
+                  </p>
                 </div>
               </Link>
             ))
           ) : (
-            <p className="text-center col-span-5 text-gray-600">
+            <p className="text-center col-span-full text-gray-600">
               該当するポケモンが見つかりません
             </p>
           )}
