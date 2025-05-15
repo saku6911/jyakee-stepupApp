@@ -18,9 +18,7 @@ interface PokemonDetailData {
   error: string | null;
 }
 
-const getSpeciesName = (name: string): string => {
-  return name.split("-")[0];
-};
+const getSpeciesName = (name: string): string => name.split("-")[0];
 
 export const usePokemonDetail = (name: string): PokemonDetailData => {
   const [pokemon, setPokemon] = useAtom(pokemonAtom);
@@ -31,7 +29,7 @@ export const usePokemonDetail = (name: string): PokemonDetailData => {
   const [moveNames, setMoveNames] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchPokemonData = async () => {
+    const fetchBasicData = async () => {
       try {
         setLoading(true);
         setError(null);
@@ -48,45 +46,66 @@ export const usePokemonDetail = (name: string): PokemonDetailData => {
         if (!speciesRes.ok) throw new Error("種族情報取得失敗");
         const speciesData: PokemonSpecies = await speciesRes.json();
         setSpecies(speciesData);
-
-        const abilities = await Promise.all(
-          pokemonData.abilities.map(async (a) => {
-            const abRes = await fetch(a.ability.url);
-            const ab: Ability = await abRes.json();
-            const ja = ab.names.find(
-              (n) => n.language.name === "ja-Hrkt" || n.language.name === "ja"
-            );
-            return ja?.name ?? a.ability.name;
-          })
-        );
-        setAbilityNames(abilities);
-
-        const selectedMoves = pokemonData.moves.slice(0, 5);
-        const names = await Promise.all(
-          selectedMoves.map(async (move) => {
-            const moveRes = await fetch(move.move.url);
-            const moveData = await moveRes.json();
-            const jaName =
-              moveData.names.find(
-                (n: {
-                  name: string;
-                  language: { name: string; url: string };
-                }) => n.language.name === "ja-Hrkt" || n.language.name === "ja"
-              )?.name ?? move.move.name;
-            return jaName;
-          })
-        );
-        setMoveNames(names);
       } catch (err) {
         console.error(err);
-        setError("データの取得に失敗しました");
+        setError("基本データの取得に失敗しました");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPokemonData();
-  }, [name, setPokemon, setSpecies, setAbilityNames, setError, setLoading]);
+    fetchBasicData();
+  }, [name]);
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      if (!pokemon) return;
+
+      try {
+        const abilityResults = await Promise.all(
+          pokemon.abilities.map(async (a) => {
+            try {
+              const res = await fetch(a.ability.url);
+              const ab: Ability = await res.json();
+              const ja = ab.names.find(
+                (n) => n.language.name === "ja-Hrkt" || n.language.name === "ja"
+              );
+              return ja?.name ?? a.ability.name;
+            } catch {
+              return a.ability.name;
+            }
+          })
+        );
+        setAbilityNames(abilityResults);
+      } catch {
+        // 無視（能力だけ失敗しても致命的ではない）
+      }
+
+      try {
+        const selectedMoves = pokemon.moves.slice(0, 3);
+        const moveResults = await Promise.all(
+          selectedMoves.map(async (move) => {
+            try {
+              const res = await fetch(move.move.url);
+              const moveData = await res.json();
+              const ja = moveData.names.find(
+                (n: { language: { name: string } }) =>
+                  n.language.name === "ja-Hrkt" || n.language.name === "ja"
+              );
+              return ja?.name ?? move.move.name;
+            } catch {
+              return move.move.name;
+            }
+          })
+        );
+        setMoveNames(moveResults);
+      } catch {
+        // 無視
+      }
+    };
+
+    fetchDetails();
+  }, [pokemon]);
 
   return { pokemon, species, abilityNames, moveNames, loading, error };
 };

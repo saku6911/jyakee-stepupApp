@@ -15,6 +15,8 @@ import LoadingCircleSpinner from "../atoms/LoadingCircleSpinner";
 import { Header } from "../molecules/header";
 import { toHiragana } from "../../utils/convertToHiragana";
 
+// ... imports 略
+
 export default function User() {
   const { pokeList, loading } = usePokemonData();
   const fetchPokemons = useSetAtom(fetchPagePokemonsActionAtom);
@@ -49,7 +51,6 @@ export default function User() {
     const query = toHiragana(searchQuery.toLowerCase());
     const name = poke.name.toLowerCase();
     const jaName = poke.jaName ? toHiragana(poke.jaName) : "";
-
     return name.includes(query) || jaName.includes(query);
   });
 
@@ -85,10 +86,12 @@ export default function User() {
               <Link to={`/pokemon/${poke.name}`} key={poke.name}>
                 <div className="text-center w-full">
                   <img
-                    loading="lazy"
                     src={poke.image}
-                    alt={poke.name}
-                    className="mx-auto w-[120px] h-auto sm:w-[150px] md:w-[180px] lg:w-[200px]"
+                    alt={poke.jaName || poke.name}
+                    width={180}
+                    height={180}
+                    decoding="async"
+                    className="mx-auto w-[120px] sm:w-[150px] md:w-[180px] lg:w-[200px]"
                   />
                   <p className="mt-2 font-semibold">
                     {poke.jaName} ({poke.name})
