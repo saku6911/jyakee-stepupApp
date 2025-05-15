@@ -1,6 +1,12 @@
+import React from "react";
 import { InputProps } from "../../../types";
 
-export const Input = ({ type, value, placeholder, onChange }: InputProps) => {
+export const Input = React.memo(function Input({
+  type,
+  value,
+  placeholder,
+  onChange,
+}: InputProps) {
   return (
     <input
       className="bg-white rounded-md border-1 border-gray-400 border-solid px-2 py-1"
@@ -10,4 +16,4 @@ export const Input = ({ type, value, placeholder, onChange }: InputProps) => {
       onChange={onChange}
     />
   );
-};
+});

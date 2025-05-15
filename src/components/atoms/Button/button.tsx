@@ -1,6 +1,10 @@
 import { ButtonProps } from "../../../types";
+import React from "react";
 
-export const Button = ({ children, onClick }: ButtonProps) => {
+export const Button = React.memo(function Button({
+  children,
+  onClick,
+}: ButtonProps) {
   return (
     <button
       onClick={onClick}
@@ -9,4 +13,4 @@ export const Button = ({ children, onClick }: ButtonProps) => {
       {children}
     </button>
   );
-};
+});
