@@ -18,6 +18,10 @@ interface PokemonDetailData {
   error: string | null;
 }
 
+const getSpeciesName = (name: string): string => {
+  return name.split("-")[0];
+};
+
 export const usePokemonDetail = (name: string): PokemonDetailData => {
   const [pokemon, setPokemon] = useAtom(pokemonAtom);
   const [species, setSpecies] = useAtom(speciesAtom);
@@ -30,14 +34,18 @@ export const usePokemonDetail = (name: string): PokemonDetailData => {
     const fetchPokemonData = async () => {
       try {
         setLoading(true);
+        setError(null);
 
         const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+        if (!res.ok) throw new Error("ポケモンデータ取得失敗");
         const pokemonData: Pokemon = await res.json();
         setPokemon(pokemonData);
 
+        const speciesName = getSpeciesName(name);
         const speciesRes = await fetch(
-          `https://pokeapi.co/api/v2/pokemon-species/${name}`
+          `https://pokeapi.co/api/v2/pokemon-species/${speciesName}`
         );
+        if (!speciesRes.ok) throw new Error("種族情報取得失敗");
         const speciesData: PokemonSpecies = await speciesRes.json();
         setSpecies(speciesData);
 
